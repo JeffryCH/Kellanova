@@ -35,6 +35,8 @@ try {
 // JavaScript to display records in records.html
 window.addEventListener('load', () => {
   const eventsTableBody = document.getElementById('eventsTable')?.getElementsByTagName('tbody')[0];
+  const messageElement = document.getElementById("message");
+
   if (!eventsTableBody) {
     console.error("Error: No se encontró el elemento de la tabla para mostrar los registros.");
     return;
@@ -47,8 +49,10 @@ window.addEventListener('load', () => {
       eventsTableBody.innerHTML = '';
       if (!snapshot.exists()) {
         console.warn("No hay registros disponibles en la base de datos.");
+        messageElement.innerText = "No hay registros disponibles en este momento.";
         return;
       }
+
       snapshot.forEach((childSnapshot) => {
         const event = childSnapshot.val();
         console.log("Registro encontrado:", event);
@@ -61,7 +65,8 @@ window.addEventListener('load', () => {
 
         cell1.textContent = event.eventType;
         cell2.textContent = new Date(event.timestamp).toLocaleString();
-        cell3.textContent = event.location;
+        cell3.textContent = event.location || "No disponible";
+
         if (event.gpsLocation) {
           const gpsLink = document.createElement('a');
           gpsLink.href = `https://www.google.com/maps?q=${event.gpsLocation.latitude},${event.gpsLocation.longitude}`;
@@ -75,8 +80,10 @@ window.addEventListener('load', () => {
       });
     }, (error) => {
       console.error("Error al obtener los registros:", error);
+      messageElement.innerText = `Error al obtener los registros: ${error.message}`;
     });
   } catch (error) {
     console.error("Error al intentar leer los registros de la base de datos:", error);
+    messageElement.innerText = "Error al intentar leer los registros de la base de datos.";
   }
 });

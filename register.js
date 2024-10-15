@@ -23,10 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("password");
   const messageElement = document.getElementById("loginMessage");
 
-  if (loginButton) {
+  if (loginButton && emailInput && passwordInput && messageElement) {
     loginButton.addEventListener("click", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
+      messageElement.innerText = ""; // Limpiar el mensaje anterior
 
       if (email === "" || password === "") {
         messageElement.innerText = "Por favor ingrese un correo electrónico y contraseña válidos.";
@@ -35,21 +36,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          const user = userCredential.user;
-          messageElement.innerText = "Inicio de sesión exitoso.";
+          messageElement.style.color = "green";
+          messageElement.innerText = "Inicio de sesión exitoso. Redirigiendo...";
           window.location.href = "https://jeffrych.github.io/Kellanova/dashboard.html";
         })
         .catch((error) => {
           console.error("Error al iniciar sesión:", error);
-          messageElement.innerText = `Error: ${error.message}`;
+          messageElement.style.color = "red";
+          switch (error.code) {
+            case "auth/wrong-password":
+              messageElement.innerText = "La contraseña es incorrecta.";
+              break;
+            case "auth/user-not-found":
+              messageElement.innerText = "No se encontró un usuario con ese correo.";
+              break;
+            case "auth/invalid-email":
+              messageElement.innerText = "El correo electrónico no es válido.";
+              break;
+            default:
+              messageElement.innerText = `Error: ${error.message}`;
+          }
         });
     });
   }
 
-  if (registerButton) {
+  if (registerButton && emailInput && passwordInput && messageElement) {
     registerButton.addEventListener("click", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value.trim();
+      messageElement.innerText = ""; // Limpiar el mensaje anterior
 
       if (email === "" || password === "") {
         messageElement.innerText = "Por favor ingrese un correo electrónico y contraseña válidos.";
@@ -58,12 +73,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          const user = userCredential.user;
+          messageElement.style.color = "green";
           messageElement.innerText = "Registro exitoso. Ahora puedes iniciar sesión.";
         })
         .catch((error) => {
           console.error("Error al registrar el usuario:", error);
-          messageElement.innerText = `Error: ${error.message}`;
+          messageElement.style.color = "red";
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              messageElement.innerText = "El correo electrónico ya está en uso.";
+              break;
+            case "auth/weak-password":
+              messageElement.innerText = "La contraseña es demasiado débil. Debe tener al menos 6 caracteres.";
+              break;
+            case "auth/invalid-email":
+              messageElement.innerText = "El correo electrónico no es válido.";
+              break;
+            default:
+              messageElement.innerText = `Error: ${error.message}`;
+          }
         });
     });
   }

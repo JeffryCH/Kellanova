@@ -54,6 +54,19 @@
       .menu a:hover {
         text-decoration: underline;
       }
+      .logout-button {
+        margin-left: 20px;
+        background-color: #ff4444;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .logout-button:hover {
+        background-color: #d32f2f;
+      }
     </style>
   </head>
   <body>
@@ -63,6 +76,7 @@
         >Ver Registros</a
       >
       <p class="welcome-message" id="welcomeMessage"></p>
+      <button class="logout-button" id="logoutButton">Cerrar Sesión</button>
     </div>
 
     <h1>Dashboard Principal</h1>
@@ -101,11 +115,25 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const username = localStorage.getItem("username") || "Usuario";
+        const username = localStorage.getItem("username");
+        if (!username) {
+          // Si no hay un usuario autenticado, redirigimos al inicio de sesión
+          window.location.href =
+            "https://jeffrych.github.io/Kellanova/index.html";
+          return;
+        }
+
         document.getElementById("usernameDisplay").innerText = username;
         document.getElementById(
           "welcomeMessage"
         ).innerText = `Bienvenido, ${username}`;
+
+        const logoutButton = document.getElementById("logoutButton");
+        logoutButton.addEventListener("click", () => {
+          localStorage.removeItem("username");
+          window.location.href =
+            "https://jeffrych.github.io/Kellanova/index.html";
+        });
       });
     </script>
   </body>
