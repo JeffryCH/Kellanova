@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Check-In y Check-Out</title>
+    <link
+      rel="stylesheet"
+      href="https://7043-2800-860-7182-80ad-75a4-92e1-35c8-12d9.ngrok-free.app/styles.css"
+    />
+    <style>
+      body {
+        background-image: url("/img/marcas-mars-kellanova.jpg");
+        background-size: cover;
+        background-position: center;
+      }
+      #checkInForm {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <a
+        href="https://7043-2800-860-7182-80ad-75a4-92e1-35c8-12d9.ngrok-free.app/index.html"
+        >Inicio</a
+      >
+      <a
+        href="https://7043-2800-860-7182-80ad-75a4-92e1-35c8-12d9.ngrok-free.app/records.html"
+        >Ver Registros</a
+      >
+      <img
+        src="/img/kellanova-logo-banner.avif"
+        alt="Logo"
+        style="margin: 0 auto; height: 40px"
+      />
+      <p
+        id="clock"
+        style="
+          margin-left: auto;
+          color: white;
+          font-weight: bold;
+          white-space: nowrap;
+        "
+      ></p>
+    </div>
+
+    <h1>Registro de Horas</h1>
+    <form id="checkInForm" onsubmit="return false;">
+      <label for="username">Nombre de Usuario:</label>
+      <input type="text" id="username" name="username" required /><br /><br />
+      <button type="button" id="checkInButton">Check-In</button>
+      <button type="button" id="checkOutButton">Check-Out</button>
+      <input type="hidden" id="location" name="location" />
+    </form>
+    <p id="message"></p>
+
+    <script
+      type="module"
+      src="https://7043-2800-860-7182-80ad-75a4-92e1-35c8-12d9.ngrok-free.app/script.js"
+    ></script>
+    <script
+      type="module"
+      src="https://7043-2800-860-7182-80ad-75a4-92e1-35c8-12d9.ngrok-free.app/clock.js"
+    ></script>
+  </body>
+</html>
