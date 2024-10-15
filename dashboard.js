@@ -10,15 +10,19 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
   
+    // Display welcome message and username if elements exist
     const welcomeMessageElement = document.getElementById("welcomeMessage");
     const usernameDisplayElement = document.getElementById("usernameDisplay");
   
-    if (welcomeMessageElement && usernameDisplayElement) {
+    if (welcomeMessageElement) {
       welcomeMessageElement.innerText = `Bienvenido, ${username}`;
+    }
+  
+    if (usernameDisplayElement) {
       usernameDisplayElement.innerText = username;
     }
   
-    // Add logout functionality
+    // Add logout functionality if button exists
     const logoutButton = document.getElementById("logoutButton");
     if (logoutButton) {
       logoutButton.addEventListener("click", () => {
@@ -27,13 +31,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
-    // Menu options interactions
+    // Add menu links interactions if menu links exist
     const menuLinks = document.querySelectorAll(".menu a");
-    menuLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        // La redirección se realiza automáticamente gracias al atributo href del enlace
-        console.log(`Navegando a: ${link.getAttribute("href")}`);
+    if (menuLinks.length > 0) {
+      menuLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          // La redirección se realiza automáticamente gracias al atributo href del enlace
+          console.log(`Navegando a: ${link.getAttribute("href")}`);
+        });
       });
-    });
+    }
   });
   

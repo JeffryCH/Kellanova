@@ -57,7 +57,26 @@
       type="module"
       src="https://jeffrych.github.io/Kellanova/register.js"
     ></script>
-    <script>
+    <script type="module">
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDavujclRlYnq3_PiUrDwdni1y-26iaYK0",
+        authDomain: "kellogg-s-d6006.firebaseapp.com",
+        projectId: "kellogg-s-d6006",
+        storageBucket: "kellogg-s-d6006.appspot.com",
+        messagingSenderId: "882591600958",
+        appId: "1:882591600958:web:359b0eb7e54e8592c19c6f",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
       document.addEventListener("DOMContentLoaded", () => {
         const loginButton = document.getElementById("loginButton");
         const registerButton = document.getElementById("registerButton");
