@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar Sesión / Registro - Check-In y Check-Out</title>
+    <title>Iniciar Sesión - Check-In y Check-Out</title>
     <link
       rel="stylesheet"
       href="https://jeffrych.github.io/Kellanova/styles.css"
@@ -23,14 +23,14 @@
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
       }
       #loginMessage {
+        color: red;
         text-align: center;
-        font-weight: bold;
       }
     </style>
   </head>
   <body>
     <div class="navbar">
-      <h2>Iniciar Sesión / Registro</h2>
+      <h2>Iniciar Sesión</h2>
     </div>
 
     <div id="loginForm">
@@ -53,9 +53,98 @@
       <p id="loginMessage"></p>
     </div>
 
-    <script
-      type="module"
-      src="https://jeffrych.github.io/Kellanova/register.js"
-    ></script>
+    <script type="module">
+      import {
+        getAuth,
+        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDavujclRlYnq3_PiUrDwdni1y-26iaYK0",
+        authDomain: "kellogg-s-d6006.firebaseapp.com",
+        projectId: "kellogg-s-d6006",
+        storageBucket: "kellogg-s-d6006.appspot.com",
+        messagingSenderId: "882591600958",
+        appId: "1:882591600958:web:359b0eb7e54e8592c19c6f",
+      };
+
+      // Initialize Firebase App and Auth
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const loginButton = document.getElementById("loginButton");
+        const registerButton = document.getElementById("registerButton");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const loginMessage = document.getElementById("loginMessage");
+
+        if (
+          !loginButton ||
+          !registerButton ||
+          !emailInput ||
+          !passwordInput ||
+          !loginMessage
+        ) {
+          console.error(
+            "Error: Uno o más elementos del DOM no se encontraron."
+          );
+          return;
+        }
+
+        loginButton.addEventListener("click", () => {
+          const email = emailInput.value.trim();
+          const password = passwordInput.value.trim();
+
+          if (email === "" || password === "") {
+            loginMessage.innerText =
+              "Por favor ingrese un correo electrónico y contraseña válidos.";
+            return;
+          }
+
+          signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              loginMessage.style.color = "green";
+              loginMessage.innerText =
+                "Inicio de sesión exitoso. Redirigiendo...";
+              localStorage.setItem("username", email); // Guardar el nombre de usuario
+              setTimeout(() => {
+                window.location.href =
+                  "https://jeffrych.github.io/Kellanova/dashboard.html";
+              }, 1000);
+            })
+            .catch((error) => {
+              console.error("Error al iniciar sesión:", error);
+              loginMessage.style.color = "red";
+              loginMessage.innerText = `Error: ${error.message}`;
+            });
+        });
+
+        registerButton.addEventListener("click", () => {
+          const email = emailInput.value.trim();
+          const password = passwordInput.value.trim();
+
+          if (email === "" || password === "") {
+            loginMessage.innerText =
+              "Por favor ingrese un correo electrónico y contraseña válidos.";
+            return;
+          }
+
+          createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+              loginMessage.style.color = "green";
+              loginMessage.innerText =
+                "Registro exitoso. Ahora puedes iniciar sesión.";
+            })
+            .catch((error) => {
+              console.error("Error al registrar el usuario:", error);
+              loginMessage.style.color = "red";
+              loginMessage.innerText = `Error: ${error.message}`;
+            });
+        });
+      });
+    </script>
   </body>
 </html>
