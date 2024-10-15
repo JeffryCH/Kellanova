@@ -21,46 +21,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const registerButton = document.getElementById("registerButton");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
-  const messageElement = document.getElementById("message");
+  const messageElement = document.getElementById("loginMessage");
 
-  loginButton.addEventListener("click", () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+  if (loginButton) {
+    loginButton.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
 
-    if (email === "" || password === "") {
-      messageElement.innerText = "Por favor ingrese un correo electrónico y contraseña válidos.";
-      return;
-    }
+      if (email === "" || password === "") {
+        messageElement.innerText = "Por favor ingrese un correo electrónico y contraseña válidos.";
+        return;
+      }
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        messageElement.innerText = "Inicio de sesión exitoso.";
-        window.location.href = "https://jeffrych.github.io/Kellanova/dashboard.html";
-      })
-      .catch((error) => {
-        console.error("Error al iniciar sesión:", error);
-        messageElement.innerText = `Error: ${error.message}`;
-      });
-  });
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          messageElement.innerText = "Inicio de sesión exitoso.";
+          window.location.href = "https://jeffrych.github.io/Kellanova/dashboard.html";
+        })
+        .catch((error) => {
+          console.error("Error al iniciar sesión:", error);
+          messageElement.innerText = `Error: ${error.message}`;
+        });
+    });
+  }
 
-  registerButton.addEventListener("click", () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
+  if (registerButton) {
+    registerButton.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
 
-    if (email === "" || password === "") {
-      messageElement.innerText = "Por favor ingrese un correo electrónico y contraseña válidos.";
-      return;
-    }
+      if (email === "" || password === "") {
+        messageElement.innerText = "Por favor ingrese un correo electrónico y contraseña válidos.";
+        return;
+      }
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        messageElement.innerText = "Registro exitoso. Ahora puedes iniciar sesión.";
-      })
-      .catch((error) => {
-        console.error("Error al registrar el usuario:", error);
-        messageElement.innerText = `Error: ${error.message}`;
-      });
-  });
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          messageElement.innerText = "Registro exitoso. Ahora puedes iniciar sesión.";
+        })
+        .catch((error) => {
+          console.error("Error al registrar el usuario:", error);
+          messageElement.innerText = `Error: ${error.message}`;
+        });
+    });
+  }
 });
