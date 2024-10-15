@@ -1,5 +1,6 @@
 // Import Firebase SDK modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
 // Firebase configuration
@@ -31,113 +32,102 @@ try {
   console.error("Error al conectar con la base de datos:", error);
 }
 
-// JavaScript to handle the check-in/check-out buttons
+let auth;
+try {
+  auth = getAuth(app);
+  console.log("Autenticación de Firebase inicializada correctamente");
+} catch (error) {
+  console.error("Error al inicializar la autenticación de Firebase:", error);
+}
+
+// JavaScript to handle user authentication
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log("Inicio de sesión exitoso para:", user.email);
+        window.location.href = "dashboard.html";
+      })
+      .catch((error) => {
+        console.error("Error al iniciar sesión:", error);
+        document.getElementById('loginMessage').innerText = "Usuario o contraseña incorrectos.";
+      });
+  });
+}
+
+const registerForm = document.getElementById('registerForm');
+if (registerForm) {
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Registered
+        const user = userCredential.user;
+        console.log("Registro exitoso para:", user.email);
+        document.getElementById('registerMessage').innerText = "Usuario registrado exitosamente.";
+      })
+      .catch((error) => {
+        console.error("Error al registrar usuario:", error);
+        document.getElementById('registerMessage').innerText = "Error al registrar usuario: " + error.message;
+      });
+  });
+}
+
+// JavaScript to display records in records.html
 document.addEventListener("DOMContentLoaded", () => {
-  const checkInButton = document.getElementById('checkInButton');
-  const checkOutButton = document.getElementById('checkOutButton');
-  const usernameInput = document.getElementById('username');
-  const locationInput = document.getElementById('location');
-  const messageElement = document.getElementById('message');
-  const clockElement = document.getElementById('clock');
-
-  if (!checkInButton) {
-    console.error("Error: No se encontró el elemento con ID 'checkInButton'.");
-  }
-  if (!checkOutButton) {
-    console.error("Error: No se encontró el elemento con ID 'checkOutButton'.");
-  }
-  if (!usernameInput) {
-    console.error("Error: No se encontró el elemento con ID 'username'.");
-  }
-  if (!locationInput) {
-    console.error("Error: No se encontró el elemento con ID 'location'.");
-  }
-  if (!messageElement) {
-    console.error("Error: No se encontró el elemento con ID 'message'.");
-  }
-  if (!clockElement) {
-    console.error("Error: No se encontró el elemento con ID 'clock'.");
-  }
-
-  if (!checkInButton || !checkOutButton || !usernameInput || !locationInput || !messageElement || !clockElement) {
+  const eventsTableBody = document.getElementById("eventsTable")?.getElementsByTagName("tbody")[0];
+  if (!eventsTableBody) {
+    console.error("Error: No se encontró el elemento de la tabla para mostrar los registros.");
     return;
   }
 
-  // Update the clock in real time
-  function updateClock() {
-    const now = new Date();
-    clockElement.innerText = now.toLocaleTimeString();
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
+  try {
+    const eventsRef = ref(database, "events");
 
-  checkInButton.addEventListener('click', () => {
-    getGPSLocation((gpsLocation) => {
-      handleCheckInOrOut('Check-In', gpsLocation);
-    });
-  });
+    onValue(eventsRef, (snapshot) => {
+      eventsTableBody.innerHTML = "";
+      if (!snapshot.exists()) {
+        console.warn("No hay registros disponibles en la base de datos.");
+        return;
+      }
+      snapshot.forEach((childSnapshot) => {
+        const event = childSnapshot.val();
+        console.log("Registro encontrado:", event);
+        const row = eventsTableBody.insertRow();
 
-  checkOutButton.addEventListener('click', () => {
-    getGPSLocation((gpsLocation) => {
-      handleCheckInOrOut('Check-Out', gpsLocation);
-    });
-  });
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
 
-  function handleCheckInOrOut(eventType, gpsLocation) {
-    const username = usernameInput.value;
-    const location = locationInput.value || "Unknown";
-    const timestamp = new Date().toISOString();
-
-    if (username.trim() === '') {
-      messageElement.innerText = 'Por favor ingrese un nombre de usuario válido';
-      console.warn("Nombre de usuario vacío");
-      return;
-    }
-
-    console.log("Datos a registrar:", { username, eventType, timestamp, location, gpsLocation });
-
-    // Reference to the 'events' node in Firebase
-    try {
-      const eventsRef = ref(database, 'events');
-      const newEventRef = push(eventsRef);
-
-      set(newEventRef, {
-        username,
-        eventType,
-        timestamp,
-        location,
-        gpsLocation
-      }).then(() => {
-        console.log("Registro exitoso para:", username);
-        messageElement.innerText = `${eventType} registrado correctamente para ${username}`;
-      }).catch((error) => {
-        console.error("Error al registrar el evento:", error);
-        messageElement.innerText = `Error al registrar el evento: ${error.message}`;
-      });
-    } catch (error) {
-      console.error("Error al crear la referencia o al intentar escribir en la base de datos:", error);
-    }
-  }
-
-  function getGPSLocation(callback) {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const gpsLocation = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          };
-          console.log("Ubicación GPS obtenida:", gpsLocation);
-          callback(gpsLocation);
-        },
-        (error) => {
-          console.error("Error al obtener la ubicación GPS:", error);
-          callback(null);
+        cell1.textContent = event.eventType;
+        cell2.textContent = new Date(event.timestamp).toLocaleString();
+        cell3.textContent = event.location;
+        if (event.gpsLocation) {
+          const gpsLink = document.createElement("a");
+          gpsLink.href = `https://www.google.com/maps?q=${event.gpsLocation.latitude},${event.gpsLocation.longitude}`;
+          gpsLink.target = "_blank";
+          gpsLink.textContent = `${event.gpsLocation.latitude}, ${event.gpsLocation.longitude}`;
+          gpsLink.classList.add("gps-link");
+          cell4.appendChild(gpsLink);
+        } else {
+          cell4.textContent = "No disponible";
         }
-      );
-    } else {
-      console.error("La geolocalización no es compatible con este navegador.");
-      callback(null);
-    }
+      });
+    }, (error) => {
+      console.error("Error al obtener los registros:", error);
+    });
+  } catch (error) {
+    console.error("Error al intentar leer los registros de la base de datos:", error);
   }
 });

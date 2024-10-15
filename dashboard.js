@@ -19,4 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "https://jeffrych.github.io/Kellanova/index.html";
       });
     }
+  
+    // Menu options interactions
+    const menuLinks = document.querySelectorAll(".menu a");
+    menuLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const href = link.getAttribute("href");
+        window.location.href = href;
+      });
+    });
   });

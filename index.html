@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Check-In y Check-Out</title>
+    <title>Iniciar Sesión - Check-In y Check-Out</title>
     <link
       rel="stylesheet"
       href="https://jeffrych.github.io/Kellanova/styles.css"
@@ -14,52 +14,71 @@
         background-size: cover;
         background-position: center;
       }
-      #checkInForm {
+      #loginForm {
         background: rgba(255, 255, 255, 0.9);
         padding: 20px;
         border-radius: 10px;
+        max-width: 400px;
+        margin: 100px auto;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      #loginMessage {
+        color: red;
+        text-align: center;
       }
     </style>
   </head>
   <body>
     <div class="navbar">
-      <a href="https://jeffrych.github.io/Kellanova/index.html">Inicio</a>
-      <a href="https://jeffrych.github.io/Kellanova/records.html"
-        >Ver Registros</a
-      >
-      <img
-        src="https://jeffrych.github.io/Kellanova/img/kellanova-logo-banner.avif"
-        alt="Logo"
-        style="margin: 0 auto; height: 40px"
-      />
-      <p
-        id="clock"
-        style="
-          margin-left: auto;
-          color: white;
-          font-weight: bold;
-          white-space: nowrap;
-        "
-      ></p>
+      <h2>Iniciar Sesión</h2>
     </div>
 
-    <h1>Registro de Horas</h1>
-    <form id="checkInForm" onsubmit="return false;">
-      <label for="username">Nombre de Usuario:</label>
-      <input type="text" id="username" name="username" required /><br /><br />
-      <button type="button" id="checkInButton">Check-In</button>
-      <button type="button" id="checkOutButton">Check-Out</button>
-      <input type="hidden" id="location" name="location" />
-    </form>
-    <p id="message"></p>
+    <div id="loginForm">
+      <h3>Iniciar Sesión</h3>
+      <form onsubmit="return false;">
+        <label for="username">Nombre de Usuario:</label>
+        <input type="text" id="username" name="username" required /><br /><br />
 
-    <script
-      type="module"
-      src="https://jeffrych.github.io/Kellanova/script.js"
-    ></script>
-    <script
-      type="module"
-      src="https://jeffrych.github.io/Kellanova/clock.js"
-    ></script>
+        <label for="password">Contraseña:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+        /><br /><br />
+
+        <button type="button" id="loginButton">Iniciar Sesión</button>
+      </form>
+      <p id="loginMessage"></p>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const loginButton = document.getElementById("loginButton");
+        const loginMessage = document.getElementById("loginMessage");
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+
+        loginButton.addEventListener("click", () => {
+          const username = usernameInput.value.trim();
+          const password = passwordInput.value.trim();
+
+          if (username === "" || password === "") {
+            loginMessage.innerText =
+              "Por favor ingrese un nombre de usuario y contraseña válidos.";
+            return;
+          }
+
+          // Simulación de autenticación
+          if (username === "admin" && password === "1234") {
+            localStorage.setItem("username", username);
+            window.location.href =
+              "https://jeffrych.github.io/Kellanova/dashboard.html";
+          } else {
+            loginMessage.innerText = "Usuario o contraseña incorrectos.";
+          }
+        });
+      });
+    </script>
   </body>
 </html>

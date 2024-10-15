@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Bienvenido</title>
+    <link
+      rel="stylesheet"
+      href="https://jeffrych.github.io/Kellanova/styles.css"
+    />
+    <style>
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #333;
+        padding: 10px;
+      }
+      .navbar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px;
+        transition: background-color 0.3s;
+      }
+      .navbar a:hover {
+        background-color: #555;
+        border-radius: 5px;
+      }
+      .welcome-message {
+        color: white;
+        font-weight: bold;
+        margin-left: auto;
+      }
+      .menu {
+        max-width: 600px;
+        margin: 20px auto;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .menu ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .menu li {
+        margin: 10px 0;
+      }
+      .menu a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .menu a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <a href="https://jeffrych.github.io/Kellanova/index.html">Inicio</a>
+      <a href="https://jeffrych.github.io/Kellanova/records.html"
+        >Ver Registros</a
+      >
+      <p class="welcome-message" id="welcomeMessage"></p>
+    </div>
+
+    <h1>Dashboard Principal</h1>
+    <div class="dashboard-container">
+      <p>
+        Bienvenido, <span id="usernameDisplay"></span>. Selecciona una opción
+        del menú para comenzar.
+      </p>
+    </div>
+
+    <div class="menu">
+      <h3>Opciones del Dashboard</h3>
+      <ul>
+        <li>
+          <a href="https://jeffrych.github.io/Kellanova/check-in.html"
+            >Realizar Check-In</a
+          >
+        </li>
+        <li>
+          <a href="https://jeffrych.github.io/Kellanova/check-out.html"
+            >Realizar Check-Out</a
+          >
+        </li>
+        <li>
+          <a href="https://jeffrych.github.io/Kellanova/profile.html"
+            >Ver Perfil</a
+          >
+        </li>
+        <li>
+          <a href="https://jeffrych.github.io/Kellanova/settings.html"
+            >Configuración</a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const username = localStorage.getItem("username") || "Usuario";
+        document.getElementById("usernameDisplay").innerText = username;
+        document.getElementById(
+          "welcomeMessage"
+        ).innerText = `Bienvenido, ${username}`;
+      });
+    </script>
+  </body>
+</html>
