@@ -1,16 +1,19 @@
 // Import Firebase SDK modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDavujclRlYnq3_PiUrDwdni1y-26iaYK0",
   authDomain: "kellogg-s-d6006.firebaseapp.com",
+  databaseURL: "https://kellogg-s-d6006-default-rtdb.firebaseio.com",
   projectId: "kellogg-s-d6006",
   storageBucket: "kellogg-s-d6006.appspot.com",
   messagingSenderId: "882591600958",
-  appId: "1:882591600958:web:359b0eb7e54e8592c19c6f"
+  appId: "1:882591600958:web:359b0eb7e54e8592c19c6f",
+  measurementId: "G-00Y9G2LR0R"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
